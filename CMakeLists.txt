@@ -10,15 +10,6 @@ set(CMAKE_CXX_STANDARD 17)
 
 include_directories(${EIGEN3_INCLUDE_DIR})
 
-
-
-#add sub directory
-# add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/../orocos_kinematics_dynamics/orocos_kdl" "${CMAKE_CURRENT_BINARY_DIR}/orocos_kinematics_dynamics/orocos_kdl/build")
-# include_directories("$(CMAKE_CURRENT_SOURCE_DIR)/../orocos_kinematics_dynamics/orocos_kdl/src/")
-
-# add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/../kdl_parser" "${CMAKE_CURRENT_SOURCE_DIR}/../kdl_parser/build")
-# include_directories("$(CMAKE_CURRENT_SOURCE_DIR)/../kdl_parser/include/")
-
 #link all hearder in src
 include_directories(
         ${PROJECT_SOURCE_DIR}/src
