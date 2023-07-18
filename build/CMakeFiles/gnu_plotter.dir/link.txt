@@ -1,2 +1,0 @@
-/usr/bin/ar qc libgnu_plotter.a  CMakeFiles/gnu_plotter.dir/src/gnu_plotter.cpp.o
-/usr/bin/ranlib libgnu_plotter.a

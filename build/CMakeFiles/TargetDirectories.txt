@@ -1,4 +1,0 @@
-/home/wing/Documents/RND/main/build/CMakeFiles/rebuild_cache.dir
-/home/wing/Documents/RND/main/build/CMakeFiles/edit_cache.dir
-/home/wing/Documents/RND/main/build/CMakeFiles/main.dir
-/home/wing/Documents/RND/main/build/CMakeFiles/gnu_plotter.dir
