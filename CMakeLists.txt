@@ -5,7 +5,7 @@ find_library(KDL_PARSER kdl_parser)
 find_package(robif2b REQUIRED)
 include(GNUInstallDirs)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 # set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_SOURCE_DIR}/../install)
 
 include_directories(${EIGEN3_INCLUDE_DIR})
@@ -18,6 +18,7 @@ file(GLOB all_SRCS
         "${PROJECT_SOURCE_DIR}/include/*.hpp"
         "${PROJECT_SOURCE_DIR}/src/*.hpp"
         "${PROJECT_SOURCE_DIR}/src/*.cpp"
+        
         )
 
 
@@ -28,5 +29,8 @@ target_link_libraries(gnu_plotter boost_filesystem boost_system boost_iostreams 
 
 add_executable(main main.cpp ${all_SRCS} )
 TARGET_LINK_LIBRARIES(main ${orocos_kdl_LIBRARIES} boost_filesystem boost_system boost_iostreams ${KDL_PARSER} robif2b::kinova_gen3) 
+
+add_executable(robot_test robot_testing.cpp ${all_SRCS} )
+TARGET_LINK_LIBRARIES(robot_test ${orocos_kdl_LIBRARIES} boost_filesystem boost_system boost_iostreams ${KDL_PARSER} robif2b::kinova_gen3) 
 # TARGET_LINK_LIBRARIES(main kdl_parser)
 # TARGET_LINK_LIBRARIES(main orocos_kdl boost_filesystem boost_system boost_iostreams ) 

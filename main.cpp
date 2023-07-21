@@ -1,3 +1,6 @@
+#include <stdio.h>
+#include <iostream>
+
 #include "kdl/chain.hpp"
 #include "kdl/frames_io.hpp"
 #include "kdl/kinfam_io.hpp"
@@ -6,9 +9,6 @@
 #include "kdl/chainfksolverpos_recursive.hpp"
 #include "kdl/chainhdsolver_vereshchagin.hpp"
 #include "kdl_parser/kdl_parser.hpp"
-
-#include <stdio.h>
-#include <iostream>
 #include "robot.hpp"
 #include "controller.hpp"
 #include "gnu_plotter.hpp"
@@ -108,6 +108,7 @@ int main(int argc , char** argv){
     Wrench f_tool(force, torque); 
     f_ext[robot.getNrOfSegments() - 1] = f_tool;
 
+    std::cout << robot.getNrOfSegments();
     KDL::JntArray beta(num_constraint);
     beta(0) = 0.0;
     beta(1) = 0.0;
@@ -161,7 +162,7 @@ int main(int argc , char** argv){
     double k_p_position = 5;
     double k_p_velocity = 50;
 
-    PController position_controller = PController(5,0,0);
+    // PController position_controller = PController(5,0,0);
     int counter = 0;
     //for plotting
     std::vector<KDL::Vector> current_position,target_position;
@@ -216,9 +217,9 @@ int main(int argc , char** argv){
             counter ++;
 
             //logging
-            // std::cout << "=====step" << counter << "=====" <<  std::endl;
-            // std::cout << "--Controller outputs--" << std:: endl;
-
+            std::cout << "=====step" << counter << "=====" <<  std::endl;
+            std::cout << "--Controller outputs--" << std:: endl;
+            std::cout << "current velocuty" << currentVel << std::endl<< std::endl;
             // std::cout << "position error :" << pos_error << std::endl;
             // std::cout << "velocity set point" << vel_set_point<< std:: endl;
             // std::cout << "velocity error :" << vel_error << std::endl;
@@ -230,9 +231,10 @@ int main(int argc , char** argv){
             // std::cout << "velocity error :" << vel_error.vel << std::endl;
             // std::cout << "accel set point" << accel_set_point<< std::endl<< std::endl;
 
-            // std::cout << "--Solver outputs--" << std:: endl;
-            // std::cout << "qddot:" << qddot << std::endl;
-            // std::cout << "contraint torque:" << constrain_torque << std::endl;
+            std::cout << "--Solver outputs--" << std:: endl;
+            std::cout << "qddot:" << qddot << std::endl;
+            std::cout << "contraint torque:" << constrain_torque << std::endl;
+            
             // std::cout << "current EE position :" << currpos.p << std::endl;
             // std::cout << "current EE orientation :" << currpos.M << std::endl;
             // std::cout << "Goal position :" << goalpos.p << std::endl;
