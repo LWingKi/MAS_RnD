@@ -49,17 +49,29 @@ void setAlpha(const std::vector<double>& linear_alpha, const std::vector<double>
 
 }
 
+void getError(KDL::Frame &currentpos,KDL::Frame &tragetpos,KDL::Twist &pos_error){
+    pos_error = KDL::diff(currentpos,tragetpos);
+}
+
+void getError(KDL::Twist &currentvel,KDL::Twist &targetvel,KDL::Twist &vel_error){
+    vel_error = KDL::diff(currentvel,targetvel);
+}
+
+void P_controller(double &p_gain,const KDL::Twist &error_signal,KDL::Twist &control_signal){
+    control_signal = error_signal*p_gain;
+}
+
 int main(int argc , char** argv){
     KDL::Tree my_tree;
     //create a robot
     // Chain robot = Kinova_gen3();
     // Chain robot = Create_gen3();
-
     Chain robot;
 
     // get current file path
     std::filesystem::path path = __FILE__;
-    std::string robot_urdf = (path.parent_path().parent_path()/ "gen3_robotiq_2f_85.urdf").string();
+    // std::string robot_urdf = (path.parent_path().parent_path()/ "gen3_robotiq_2f_85.urdf").string();
+    std::string robot_urdf = (path.parent_path().parent_path()/ "gen3_7dof_vision_arm_urdf_v12.urdf").string();
 
     if (!kdl_parser::treeFromFile(robot_urdf, my_tree)){
         std::cout << "Failed to construct kdl tree" << std::endl;
@@ -95,13 +107,6 @@ int main(int argc , char** argv){
     Vector torque(0.0, 0.0, 0.0);
     Wrench f_tool(force, torque); 
     f_ext[robot.getNrOfSegments() - 1] = f_tool;
-    // for(int i = 0; i< robot.getNrOfJoints();i++){
-    //     q(i)= 0.0;
-    //     qdot(i) = 0.0;
-    //     qddot(i) = 0.0;
-    //     ff_torques(i) = 0.0;
-    //     constrain_torque(i) = 0.0;
-    // }
 
     KDL::JntArray beta(num_constraint);
     beta(0) = 0.0;
@@ -110,6 +115,16 @@ int main(int argc , char** argv){
     beta(3) = 0.0;
     beta(4) = 0.0;
     beta(5) = 0.0;
+
+
+    // for simulation
+    q(0) = 0; 
+    q(1) = 0;
+    q(2) = 0;
+    q(3) = -M_PI_2;
+    q(4) = 0;
+    q(5) = -M_PI_2;
+    q(6) = 0;
 
     //Create FK solver
     ChainFkSolverPos_recursive fksolver = ChainFkSolverPos_recursive(robot);
@@ -129,45 +144,31 @@ int main(int argc , char** argv){
         Vector(0.0, 0.0, 0.0));
 
     // output of the controllers
-    Twist velocity_set_point(Vector(0.0, 0.0, 0.0), Vector(0.0, 0.0, 0.0));;
-    Twist accel_set_point(Vector(0.0, 0.0, 0.0), Vector(0.0, 0.0, 0.0));
-
-    // Define error variable for logging
-    Twist position_error; // translation + rotation
-    Vector linear_position_err; // translation only
-    Twist vel_error;
-
-
-    // for simulation
-    q(0) = 0; 
-    q(1) = 0;
-    q(2) = 0;
-    q(3) = -M_PI_2;
-    q(4) = 0;
-    q(5) = -M_PI_2;
-    q(6) = 0;
-
-    //Create position and velocity controllers
-    PController position_controller = PController(5,0,0);
-    PController velocity_controller = PController(50,0,0);
+    Twist velocity_set_point(Vector(0.0, 0.0, 0.0), Vector(0.0, 0.0, 0.0));
+    Twist acceleration_set_point(Vector(0.0, 0.0, 0.0), Vector(0.0, 0.0, 0.0));
 
     Frame currpos , goalpos;
     // getting the position error for while loop
     fksolver.JntToCart(q, currpos);
     goalpos.p = currpos.p + KDL::Vector(0.10,0.0,0.0);
     goalpos.M = currpos.M * KDL::Rotation::RotX(M_PI_4);
-    position_error = position_controller.getError(currpos,goalpos);
-    linear_position_err = position_error.vel;
 
+    //Create position and velocity controllers
+    KDL::Twist pos_error;
+    KDL::Twist vel_error;
+    KDL::Twist vel_set_point;
+    KDL::Twist accel_set_point;
+    double k_p_position = 5;
+    double k_p_velocity = 50;
 
+    PController position_controller = PController(5,0,0);
     int counter = 0;
     //for plotting
     std::vector<KDL::Vector> current_position,target_position;
     std::vector<KDL::Vector> current_velocity,target_velocity;
 
-    GNUPlotter plot_graph(path.parent_path()/"log",true,true);
+    GNUPlotter plot_graph(path.parent_path()/"log",true,false);
 
-    // KDL::Vector position_plot,velocity_plot;
     do{ 
         int isSuccess = vereshchaginSolver.CartToJnt(q, qdot, qddot,alpha,beta ,f_ext, ff_torques,constrain_torque);
         if (isSuccess !=0){
@@ -183,27 +184,26 @@ int main(int argc , char** argv){
             // get cartesian pose from the solver
             vereshchaginSolver.getLinkCartesianPose(frames);
             currpos = frames[robot.getNrOfSegments()-1];
-
-            vel_error = velocity_controller.getError(currentVel,targetvel);//printing purpose
-            linear_position_err = position_error.vel; //as quit condition of while loop 
-
+            
             // get cartesian velocity from the solver
             vereshchaginSolver.getLinkCartesianVelocity(velocity);
             currentVel = velocity[robot.getNrOfSegments()-1];
 
             // Run the position controller in 10Hz
             if (counter % 100 ==0){
-                velocity_set_point = position_controller.getControlSignal(currpos,goalpos,0.01);
+                getError(currpos,goalpos,pos_error);
+                P_controller(k_p_position,pos_error,vel_set_point);
             }
             // Run the velocity controller in 100 Hz
             if (counter % 10 == 0){
-                accel_set_point = velocity_controller.getControlSignal(currentVel,velocity_set_point,0.01);
+                getError(currentVel,vel_set_point,vel_error);
+                P_controller(k_p_velocity,vel_error,accel_set_point);
             }
-
             //only enale the position controller
             // beta(0) =velocity_set_point.vel.x();
             // beta(1) =velocity_set_point.vel.y();
             // beta(2) =velocity_set_point.vel.z() + 9.81;
+            // accel_set_point = vel_set_point;
 
             // //Enable the cascade controller
             beta(0) = accel_set_point.vel.x();
@@ -218,6 +218,12 @@ int main(int argc , char** argv){
             //logging
             // std::cout << "=====step" << counter << "=====" <<  std::endl;
             // std::cout << "--Controller outputs--" << std:: endl;
+
+            // std::cout << "position error :" << pos_error << std::endl;
+            // std::cout << "velocity set point" << vel_set_point<< std:: endl;
+            // std::cout << "velocity error :" << vel_error << std::endl;
+            // std::cout << "accel set point" << accel_set_point << std::endl<< std::endl;
+
             // std::cout << "beta" << beta<< std:: endl;
             // std::cout << "position error :" << position_error.vel << std::endl;
             // std::cout << "velocity set point" << velocity_set_point<< std:: endl;
@@ -236,7 +242,8 @@ int main(int argc , char** argv){
             current_position.push_back(currpos.p);
             target_position.push_back(goalpos.p);
             current_velocity.push_back(currentVel.vel);
-            target_velocity.push_back(velocity_set_point.vel);
+            // target_velocity.push_back(velocity_set_point.vel);
+            target_velocity.push_back(vel_set_point.vel);
 
 
         }
