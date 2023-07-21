@@ -135,7 +135,7 @@ int main(int argc, char **argv)
         return -1;
     }
 
-    //Initialization for vereshagen solver 
+    //Initialization for vereshchagin solver 
     //Define vairables for solver
     const int num_constraint = 6;
     KDL::JntArray q(ROBIF2B_KINOVA_GEN3_NR_JOINTS);          //joint angle
@@ -199,7 +199,6 @@ int main(int argc, char **argv)
         printf("Error during gen3_configure\n");
         goto shutdown;
     }
-
     robif2b_kinova_gen3_recover(&rob);
     if (!success) {
         printf("Error during gen3_recover\n");
@@ -230,6 +229,15 @@ int main(int argc, char **argv)
     goalpos.M = currpos.M;
     //Start solver
     std::cout << "Start Solver" << std::endl;
+    ///////////////////////////////////////////////////////////////////
+    // STEPS:
+    // 1.Given target position (in cart space)
+    // 2.Perform FK from KDL
+    // 3.Use P controller
+    // 4.Get new beta
+    // 5.Perform vereshchagin solver -> get new joint angles
+    // 6.Send command to robot
+    ///////////////////////////////////////////////////////////////////
     for (int counter = 0; counter < 3000; counter++) {
         // get cartesian pose from the solver
         vereshchaginSolver.getLinkCartesianPose(frames);
@@ -257,7 +265,7 @@ int main(int argc, char **argv)
         beta(5) = accel_set_point.rot.z();
         int isSuccess = vereshchaginSolver.CartToJnt(q, qdot, qddot,alpha,beta ,f_ext, ff_torques,constrain_torque);
         if (isSuccess !=0){
-            std::cout <<"ERROR!"<< isSuccess << std::endl;
+            std::cout <<"Error in Vereshchagin Solver!"<< isSuccess << std::endl;
             goto stop;
         }
         // calculate joint angle and velocity from solver
@@ -298,32 +306,7 @@ int main(int argc, char **argv)
     std::cout << "Run ended successfully\n";
     plot_graph.plotXYZ(current_position,target_position,"Position",0.01);
     plot_graph.plotXYZ(current_velocity,target_velocity,"Velocity",0.05);
-    /*
-    //eg move along z until velocity ~0
-    // given target position (in cart space)
 
-    // Perform FK from KDL
-    
-    // use P controller
-
-    // get new beta
-
-    // Perform vereshagen solver -> get new joint angles
-
-    // send command to robot
-    
-    for (int i = 0; i < 3000; i++) {
-        robif2b_kinova_gen3_update(&rob);
-        
-
-        if (!success) {
-            printf("Error during gen3_update\n");
-            goto stop;
-        }
-
-        usleep(1000);
-    }
-*/
 stop:
     robif2b_kinova_gen3_stop(&rob);
     printf("Stopped\n");
@@ -334,6 +317,5 @@ shutdown:
         printf("Error during gen3_shutdown\n");
         return 1;
     }
-        
     return 0;
 }
