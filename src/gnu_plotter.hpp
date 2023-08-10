@@ -17,6 +17,8 @@
 #include "kdl/kinfam_io.hpp"
 #include "kdl/frames.hpp"
 
+#include "robif2b/functions/kinova_gen3.h"
+
 class GNUPlotter
 {
 public:
@@ -47,6 +49,21 @@ public:
                double ytick);
   void saveDataToCSV(const std::vector<KDL::Vector>& current_val, 
                      const std::vector<KDL::Vector>& target_val,
+                     std::string logname);
+
+  // log everything from the robot , solver and the controller
+  void saveDataToCSV(const std::vector<KDL::JntArray>& q,
+                     const std::vector<KDL::JntArray>& qdot,
+                     const std::vector<KDL::JntArray>& qddot,
+                     const std::vector<KDL::JntArray>& constraint_tau,
+                     const std::vector<KDL::Vector>& current_vel, 
+                     const std::vector<KDL::Vector>& target_vel,
+                     const std::vector<KDL::Vector>& current_pos, 
+                     const std::vector<KDL::Vector>& target_pos,
+                     const std::vector<KDL::Twist>& control_signal,
+                     const std::vector<std::array<double, 7>>& joint_torque,
+                     const std::vector<std::array<double, 7>>& actuar_current,
+                     const std::vector<std::array<double, 7>>& actuar_voltage,
                      std::string logname);
 
 private:

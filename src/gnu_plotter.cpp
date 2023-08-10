@@ -1,4 +1,5 @@
 #include "gnu_plotter.hpp"
+#include "robif2b/functions/kinova_gen3.h"
 
 GNUPlotter::GNUPlotter(std::string logs_dir,bool plot_data, bool save_data) : logs_dir_(logs_dir), save_data_(save_data) {
     // create the logs directory if it doesn't exist
@@ -157,6 +158,7 @@ void GNUPlotter::saveDataToCSV(const std::vector<KDL::Vector>& current_val, cons
 }
 
 void GNUPlotter::plotXYZ(const std::vector<KDL::Vector>& current_val, const std::vector<KDL::Vector>& target_val,std::string title,double ytick){
+
     std::vector<double> x_values, y_values, z_values;
     std::vector<double> target_x,target_y,target_z;
     if (save_data_) {
@@ -207,3 +209,116 @@ void GNUPlotter::plotXYZ(const std::vector<KDL::Vector>& current_val, const std:
 
     gp << "unset multiplot\n";
 }
+
+
+void GNUPlotter::saveDataToCSV(const std::vector<KDL::JntArray>& q,
+                     const std::vector<KDL::JntArray>& qdot,
+                     const std::vector<KDL::JntArray>& qddot,
+                     const std::vector<KDL::JntArray>& constraint_tau,
+                     const std::vector<KDL::Vector>& current_vel, 
+                     const std::vector<KDL::Vector>& target_vel,
+                     const std::vector<KDL::Vector>& current_pos, 
+                     const std::vector<KDL::Vector>& target_pos,
+                     const std::vector<KDL::Twist>& control_signal,
+                     const std::vector<std::array<double, 7>>& joint_torque,
+                     const std::vector<std::array<double, 7>>& actuar_current,
+                     const std::vector<std::array<double, 7>>& actuar_voltage,
+                     std::string logname){
+
+                        // get the filefilename
+                std::string filename = getNewFileName(logname);
+
+                // create the file
+                std::ofstream file(filename);
+                std::string str = "Index,";
+                std::string str1 = "joint_angle_0,joint_angle_1,joint_angle_2,joint_angle_3,joint_angle_4,joint_angle_5,joint_angle_6,";
+                std::string str2 = "joint_velocity_0,joint_velocity_1,joint_velocity_2,joint_velocity_3,joint_velocity_4,joint_velocity_5,joint_velocity_6,";
+                std::string str3 = "joint_accel_0,joint_accel_1,joint_accel_2,joint_accel_3,joint_accel_4,joint_accel_5,joint_accel_6,";
+                std::string str4 = "constraint_tau_0,constraint_tau_1,constraint_tau_2,constraint_tau_3,constraint_tau_4,constraint_tau_5,constraint_tau_6,";
+                std::string str5 = "current_pos_x,current_pos_y,current_pos_z,";
+                std::string str6 = "target_pos_x,target_pos_z,target_pos_z,";
+                std::string str7 = "current_vel_x,current_vel_y,current_vel_z,";
+                std::string str8 = "target_vel_x,target_vel_z,target_vel_z,";
+                std::string str9 = "control_signal_linear_x,control_signal_linear_y,control_signal_linear_z,";
+                std::string str10 = "control_signal_angular_x,control_signal_angular_y,control_signal_angular_z,";
+                std::string str11 = "joint_torque_0,joint_torque_1,joint_torque_2,joint_torque_3,joint_torque_4,joint_torque_5,joint_torque_6,";
+                std::string str12 = "actuar_current_0,actuar_current_1,actuar_current_2,actuar_current_3,actuar_current_4,actuar_current_5,actuar_current_6,";
+                std::string str13 = "actuar_voltage_0,actuar_voltage_1,actuar_voltage_2,actuar_voltage_3,actuar_voltage_4,actuar_voltage_5,actuar_voltage_6\n";
+                // std::string str8 =
+                std::string result = str+str1 + str2+str3+str4+str5+str6+str7+str8+str9+str10+str11+str12+str13;
+                file << result;
+            
+                for (size_t i = 0; i < current_vel.size(); ++i) {
+                    file << i << ","
+                        << q[i](0) << ","
+                        << q[i](1) << ","
+                        << q[i](2) << ","
+                        << q[i](3) << ","
+                        << q[i](4) << ","
+                        << q[i](5) << ","
+                        << q[i](6) << ","
+                        << qdot[i](0) << ","
+                        << qdot[i](1) << ","
+                        << qdot[i](2) << ","
+                        << qdot[i](3) << ","
+                        << qdot[i](4) << ","
+                        << qdot[i](5) << ","
+                        << qdot[i](6) << ","
+                        << qddot[i](0) << ","
+                        << qddot[i](1) << ","
+                        << qddot[i](2) << ","
+                        << qddot[i](3) << ","
+                        << qddot[i](4) << ","
+                        << qddot[i](5) << ","
+                        << qddot[i](6) << ","
+                        << constraint_tau[i](0) << ","
+                        << constraint_tau[i](1) << ","
+                        << constraint_tau[i](2) << ","
+                        << constraint_tau[i](3) << ","
+                        << constraint_tau[i](4) << ","
+                        << constraint_tau[i](5) << ","
+                        << constraint_tau[i](6) << ","
+                        << current_pos[i].x() << ","
+                        << current_pos[i].y() << ","
+                        << current_pos[i].z() << ","
+                        << target_pos[i].x() << ","
+                        << target_pos[i].y() << ","
+                        << target_pos[i].z() << ","
+                        << current_vel[i].x() << ","
+                        << current_vel[i].y() << ","
+                        << current_vel[i].z() << ","
+                        << target_vel[i].x() << ","
+                        << target_vel[i].y() << ","
+                        << target_vel[i].z() << ","
+                        << control_signal[i].vel.x() << ","
+                        << control_signal[i].vel.y() << ","
+                        << control_signal[i].vel.z() << ","
+                        << control_signal[i].rot.x() << ","
+                        << control_signal[i].rot.y() << ","
+                        << control_signal[i].rot.z() << ","
+                        << joint_torque[i][0] <<","
+                        << joint_torque[i][1] <<","
+                        << joint_torque[i][2] <<","
+                        << joint_torque[i][3] <<","
+                        << joint_torque[i][4] <<","
+                        << joint_torque[i][5] <<","
+                        << joint_torque[i][6] <<","
+                        << actuar_current[i][0] <<","
+                        << actuar_current[i][1] <<","
+                        << actuar_current[i][2] <<","
+                        << actuar_current[i][3] <<","
+                        << actuar_current[i][4] <<","
+                        << actuar_current[i][5] <<","
+                        << actuar_current[i][6] <<","
+                        << actuar_voltage[i][0] <<","
+                        << actuar_voltage[i][1] <<","
+                        << actuar_voltage[i][2] <<","
+                        << actuar_voltage[i][3] <<","
+                        << actuar_voltage[i][4] <<","
+                        << actuar_voltage[i][5] <<","
+                        << actuar_voltage[i][6] <<","
+                        <<"\n";
+                }
+
+                file.close();
+                     }
