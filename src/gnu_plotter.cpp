@@ -236,9 +236,9 @@ void GNUPlotter::saveDataToCSV(const std::vector<KDL::JntArray>& q,
                 std::string str3 = "joint_accel_0,joint_accel_1,joint_accel_2,joint_accel_3,joint_accel_4,joint_accel_5,joint_accel_6,";
                 std::string str4 = "constraint_tau_0,constraint_tau_1,constraint_tau_2,constraint_tau_3,constraint_tau_4,constraint_tau_5,constraint_tau_6,";
                 std::string str5 = "current_pos_x,current_pos_y,current_pos_z,";
-                std::string str6 = "target_pos_x,target_pos_z,target_pos_z,";
+                std::string str6 = "target_pos_x,target_pos_y,target_pos_z,";
                 std::string str7 = "current_vel_x,current_vel_y,current_vel_z,";
-                std::string str8 = "target_vel_x,target_vel_z,target_vel_z,";
+                std::string str8 = "target_vel_x,target_vel_y,target_vel_z,";
                 std::string str9 = "control_signal_linear_x,control_signal_linear_y,control_signal_linear_z,";
                 std::string str10 = "control_signal_angular_x,control_signal_angular_y,control_signal_angular_z,";
                 std::string str11 = "joint_torque_0,joint_torque_1,joint_torque_2,joint_torque_3,joint_torque_4,joint_torque_5,joint_torque_6,";

@@ -54,8 +54,17 @@ TARGET_LINK_LIBRARIES(robot_test logger tf_utils gnu_plotter ${orocos_kdl_LIBRAR
 # TARGET_LINK_LIBRARIES(main kdl_parser)
 # TARGET_LINK_LIBRARIES(main orocos_kdl boost_filesystem boost_system boost_iostreams ) 
 
-add_executable(robot_clean robot_testing_clean.cpp ${all_SRCS} )
-TARGET_LINK_LIBRARIES(robot_clean logger tf_utils gnu_plotter ${orocos_kdl_LIBRARIES} boost_filesystem boost_system boost_iostreams ${KDL_PARSER} robif2b::kinova_gen3) 
+add_executable(elbow_rest elbow_rest.cpp ${all_SRCS} )
+TARGET_LINK_LIBRARIES(elbow_rest logger tf_utils gnu_plotter ${orocos_kdl_LIBRARIES} boost_filesystem boost_system boost_iostreams ${KDL_PARSER} robif2b::kinova_gen3) 
+
+add_executable(us2 us2.cpp ${all_SRCS} )
+TARGET_LINK_LIBRARIES(us2 logger tf_utils gnu_plotter ${orocos_kdl_LIBRARIES} boost_filesystem boost_system boost_iostreams ${KDL_PARSER} robif2b::kinova_gen3) 
+
+add_executable(us2_contacless us2_copy.cpp ${all_SRCS} )
+TARGET_LINK_LIBRARIES(us2_contacless logger tf_utils gnu_plotter ${orocos_kdl_LIBRARIES} boost_filesystem boost_system boost_iostreams ${KDL_PARSER} robif2b::kinova_gen3) 
+
+add_executable(us1 us1.cpp ${all_SRCS} )
+TARGET_LINK_LIBRARIES(us1 logger tf_utils gnu_plotter ${orocos_kdl_LIBRARIES} boost_filesystem boost_system boost_iostreams ${KDL_PARSER} robif2b::kinova_gen3) 
 
 add_executable(mujoco_test mujoco_test.cpp)
 TARGET_LINK_LIBRARIES(mujoco_test mujoco)
