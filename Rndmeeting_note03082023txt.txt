@@ -1,0 +1,33 @@
+Rnd + thesis meeting note 03082023
+
+doubt:
+1. robot motion -> tiltle down (gravity?) , drop faster with gripper even added the weight
+2. robot motion (move forward) -> tilt up 
+
+
+thesis idea:
+
+1. explotinig more contact to different surfaces (walls / slope .etc)
+2. with sensing info (addiotnal IMU / camera)
+3. building/constructing the world environment via contact (moving along a surface to "detect" corner/edges then build the environment)
+4. correcting the existing model  (Robot think about the model (prior knowledge) different from the actual contact)
+5. what is the ROI base on contact  (many data receive but pick the important one eg: edge/corner to build the model)
+6. object as probe to explore the environment
+7. moderliy -> different texture -> imply to different object
+8. control the other part of the link -> activate the task via contact (touch a surface then do other tasks)
+9. add IMU and RGB camera -> no need for RGB-D
+
+application POV:
+robot resting tesk -> other joint contact detection
+fine control  
+
+
+define / asumpition
+environment is known or unknown (seeking task/motion oppotunity)
+
+
+active perception
+
+(no IMU in ee?)
+additional modarity as prior
+

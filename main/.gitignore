@@ -44,6 +44,8 @@ eigen/
 install/
 kdl_parser/
 kortex_api/
+kortex/
 mujoco-2.3.7/
 orocos_kinematics_dynamics/
 robif2b/
+log/
