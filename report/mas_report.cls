@@ -65,7 +65,9 @@
 \usepackage{titling}
 \usepackage[nottoc]{tocbibind}
 \usepackage{bm} % Required for showing math symbols in boldface
-
+% \usepackage{algorithm}
+% \usepackage{algpseudocode}
+\usepackage[ruled, lined, linesnumbered]{algorithm2e}
 \usepackage{lipsum} % Used to test
 \usepackage{lmodern}%
 
@@ -334,7 +336,7 @@ Supervised by\par
     {\flushleft}%format
     {}%label
     {0pt}%sep
-    {\bfseries\large\thesection~}%before code
+    {\bfseries\Large\thesection~}%before code
     % [\vspace{0.5cm}]
 
 \titlespacing{\section}{0pt}{0pt}{0pt}
@@ -343,7 +345,7 @@ Supervised by\par
     {\flushleft}%format
     {}%label
     {0pt}%sep
-    {\bfseries\large\thesubsection~}%before code
+    {\bfseries\Large\thesubsection~}%before code
     % [\vspace{0.1cm}]
 
 \titlespacing{\subsection}{0pt}{0pt}{0pt}
