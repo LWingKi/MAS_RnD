@@ -70,7 +70,22 @@
 \usepackage[ruled, lined, linesnumbered]{algorithm2e}
 \usepackage{lipsum} % Used to test
 \usepackage{lmodern}%
-
+\usepackage{listings}
+\usepackage{xcolor}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\lstset { %
+    language=C++,
+    backgroundcolor=\color{black!5}, % set backgroundcolor
+    basicstyle=\footnotesize,% basic font setting
+    numbers=left,
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple}
+}
 \onehalfspacing
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Definitions

@@ -18,5 +18,52 @@
         algorithm. It shows the connection between controller, solver and robot.}
         \label{fig:sys}
     \end{figure}
+
     \section{Extension of Robif2b}
+    In this research and development project, the Kinova® Gen3 Ultra lightweight robot manipulator is employed, and a Kinova Kortex API client facilitates communication between the robot and the software\cite{Kinovaapi},\cite{KINOVA_userguide}. The script employs low-level servoing control as it circumvents the kinematic control library. This approach permits clients to independently control each actuator by transmitting command increments at a frequency of 1 kHz to increase the respond speed. Figure \ref{fig:kinova_low} show the conenction between actuator, robot base and client in Low-level servoing mode.\begin{figure}[h!]
+        \centering
+        \includegraphics[width=1\linewidth]{images/kinovalowlevel.png}
+        \caption{Conenction between actuator,robot base and client in Low-level servoing}
+        \label{fig:kinova_low}
+    \end{figure}
+    If we control robot with the Kortex api directly, we need to establish TCP/UDP connection and create session for data connection. Beside this complex implementation, there is another simple alternative. Robif2b is robot control interface wraps the session creation, connection establishment and communication between actuator, base and client side\cite{Rosym-Project}. In the original Robif2b, the connection of actuator is already being establish to received the feedback from the base such that we can write a single line of command to receive the current status of base and actuators. Nonetheless, it didn't encompass the capability to retrieve the voltage and current status of the gripper actuator. The code snippet below demonstrates how the port is configured to receive current status updates for the base and actuators:
+    \begin{lstlisting}[caption = {Struct of the enabled ports for base and actuator of Kinova kortex api in Robif2b},label={lst:Robif2b}]
+    struct robif2b_kinova_gen3_nbx
+    {
+        // Configuration
+        struct robif2b_kinova_gen3_config conf;
+        // Ports
+        const double *cycle_time;               // [s]
+        enum robif2b_ctrl_mode *ctrl_mode;
+        double *jnt_pos_msr;                    // [rad]
+        double *jnt_vel_msr;                    // [rad/s]
+        double *jnt_trq_msr;                    // [Nm]
+        double *act_cur_msr;                    // [A]
+        double *act_vol_msr;                    // [V]
+        double *gripper_pos_msr;
+        const double *jnt_pos_cmd;              // [rad]
+        const double *jnt_vel_cmd;              // [rad/s]
+        const double *jnt_trq_cmd;              // [Nm]
+        const double *act_cur_cmd;              // [A]
+
+        const double *gripper_pos_cmd;  
+        double *imu_ang_vel_msr;                // XYZ [rad/s]
+        double *imu_lin_acc_msr;                // XYZ [m/s^2]
+        
+        bool *success;
+        // Internal state
+        struct robif2b_kinova_gen3_comm *comm;
+        enum robif2b_ctrl_mode ctrl_mode_prev;
+    };
+\end{lstlisting}
+Line 12,13 and 19 are the extended port from original Robif2b such that we can retrieve the current voltage of each joint and the gripper position and we able to send the command to the gripper via sending the gripper position (0-100) with \textit{gripper\_pos\_cmd}. We can extend this struct according to the kortex api manual \cite{Kinovaapi} according to the need of evaluation.
+Before sending the command to gripper to receive its current state or control the gripper, we have to declare the connection to the base and gripper. The code segment below is the extended code of gripper connection.
+\begin{lstlisting}[caption = {Establish connection between base and gripper},label={lst:Robif2b_gripper}]
+    // Initialize interconnect command to current gripper position.
+    comm->command.mutable_interconnect()->mutable_command_id()->set_identifier(0);
+    comm->gripper_command = comm->command.mutable_interconnect()
+        ->mutable_gripper_command()->add_motor_cmd();
+\end{lstlisting}
+
+In function \textit{robif2b\_kinova\_gen3\_update(struct robif2b\_kinova\_gen3\_nbx *b)} , we can add the following line to control the gripper by simply passing the gripper position to \textit{gripper\_pos\_cmd}.
 \end{document}
