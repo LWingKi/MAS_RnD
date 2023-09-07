@@ -76,6 +76,7 @@
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
 \definecolor{codepurple}{rgb}{0.58,0,0.82}
 \definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\usepackage{caption}
 \lstset { %
     language=C++,
     backgroundcolor=\color{black!5}, % set backgroundcolor

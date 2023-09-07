@@ -25,8 +25,45 @@
 
     \paragraph*{\large{The Articulated Body Algorithm (ABA)}\\ }
     The Articulated Body Algorithm (ABA) computes the dynamics and motion of articulated bodies. This algorithm models the dynamics of each body in the system using a hierarchical approach, taking into account the interactions between the bodies and the forces acting upon them. The ABA solver is used to solve a forward dynamics problem, where accelerations are calculated from input torques\cite{featherstone1999divide}. 
-    \paragraph*{\large{The Articulated-Body Hybrid Dynamics Algorithm (ACHDA)}\\}
-    The Articulated-Body Hybrid Dynamics Algorithm (ACHDA) is capable of computing three types of dynamics: inverse dynamics, forward dynamics, and hybrid dynamics. In inverse dynamics, the solver calculates joint torques from Cartesian acceleration constraints. In forward dynamics, the solver takes feed-forward joint torques as input and computes Cartesian accelerations. In hybrid dynamics, the solver combines both of the above methods. Additionally, as a byproduct, it can also take external forces as input and compute joint accelerations.\cite{featherstone2007book}.
+    \begin{algorithm}[H]
+        \caption{The Articulated Body Algorithm (ABA)\cite{featherstone2007book}}
+        \label{alg:ABA}
+        $\bm{v_0 = 0}$\\
+        \Begin{
+            \For{i = 1 to $N_B$}{
+                $[\textbf{X}_j,\textbf{S}_i,\bm{v}_J,\bm{c}_J] = $jcalc(jtype($i$),$\bm{q_i}$,$\bm{\dot{q_i}}$)\\
+                $^{i}\textbf{X}_{\lambda(i)} = \textbf{X}_J \textbf{X}_T(i)$\\
+                \If{$\lambda(i) \neq 0$}{
+                $^{i}\textbf{X}_0 = {^{i}\textbf{X}_{\lambda(i)}}^{\lambda(i)}\textbf{X}_0$
+                }
+                $\bm{v}_i = ^{i}\textbf{X}_{\lambda(i)}{} \bm{v}_{\lambda(i)} + \bm{v}_j$\\
+                $\bm{c}_i = \bm{c}_J + \bm{v}_i \times \bm{v}_j$\\
+                $\bm{I}_i^A = \bm{I}_i$\\
+                $\bm{p}_i^A = \bm{v}_i \times^{*} \bm{I}_i \bm{v}_i - {^{i}X_0^{*}} f_i^x$
+
+            }
+
+            \For{$i=N_b$ to 1}{
+              $\bm{U}_i = I_i^A S_i$\\
+              $\bm{D}_i = S_i^T U_i$\\
+              $\bm{u}_i = \tau_i - \bm{S}_i^T \bm{p}_i^A$\\
+              \If{$\lambda(i) \neq 0$}{
+                $\bm{I}^a = \bm{I}_i^A -\bm{U}_i \bm{D}_i^{-1} \bm{U}_i^T$\\
+                $\bm{p}^a = \bm{p}_i^A + \bm{I}^a \bm{c}_i + \bm{U}_i \bm{D}_i^{-1} \bm{u}_i$\\
+                $\bm{I}_{\lambda(i)}^A = \bm{I}_{\lambda(i)}^A + {^{\lambda(i)}\bm{X}_i^*} \bm{I}^a {^i\bm{X}_{\lambda(i)}}$\\
+                $\bm{p}_{\lambda(i)}^A = \bm{p}_{\lambda(i)}^A + {^{\lambda(i)}\bm{X}_i^*} \bm{p}^a$
+              }
+            }
+            $\bm{a}_0 = -\bm{a}_g$\\
+            \For{i = 1 to $N_B$}{
+                $\bm{a^{'}} = {^i\bm{X}_{\lambda(i)}} a_{\lambda(i)} + \bm{c}_i$\\
+                $\bm{\ddot{q}_i} = \bm{D}_i^{-1}(\bm{u}_i - \bm{U}^T\bm{a}^{'})$\\
+                $\bm{a}_i = \bm{a^{'}} + \bm{S}_i \bm{\ddot{q}}_i$\\
+            }
+        }
+    \end{algorithm}
+    In the context of the Articulated Body Algorithm (ABA) and a robot with 6 degrees of freedom (DOF), ABA does not support the definition of partial task specifications for bias forces that are not represented as a 6x1 vector. As an illustration, consider the scenario where we aim to define a bias force along the linear z-direction, which naturally arises from forces like gravity. Achieving this particular specification can prove challenging within the Articulated Body Algorithm (ABA) because, in a 6x1 vector, we can only assign a zero value to such a direction. However, merely setting a value to zero does not faithfully replicate the motion dictated by nature.
+    In contrast, the Popov-Vereshchagin hybrid solver offers a solution. As outlined in Chapter \ref{Task interfaces}, it allows for the assignment of a 5x1 vector, enabling partial specification and providing the flexibility to accurately capture the desired behavior.
     \paragraph*{\large{The Recursive Newton-Euler Algorithm (RNEA)}\\}
     The Recursive Newton-Euler Algorithm (RNEA) is a recursive approach to solving the inverse dynamics problem, which involves calculating joint-space torques from joint-space accelerations for each body in a system. This algorithm takes into account the relationships between the bodies and the forces acting upon them. It is aimed to streamline and improve the computation of dynamics in complex multi-segmented robot manipulator. The recursive approach minimizes repetitive calculations and boosts computational effectiveness.Featherstone's book illustrate the algorithm as follow:\cite{featherstone2007book}.\\
     \begin{algorithm}[H]
@@ -60,6 +97,10 @@
         \label{eq:q_jac} \ddot{q} &= \bm{J}_N^{-1} \ddot{\bm{X_}N}
     \end{align}
     From \ref{eq:q_jac} , $\ddot{\bm{X_}N}$ requires task specification in all 6 directions which lead to lacking flexibility of giving partical task specification. However,  Popov-Vereshchagin hybrid solver resolves this issues by allowing partical task specification. A details explaination of different task specification will be discussed in chapter \ref{Background} section \ref{Task interfaces}.
+
+    \paragraph*{\large{The Articulated-Body Hybrid Dynamics Algorithm (ACHDA)}\\}
+    The Articulated-Body Hybrid Dynamics Algorithm (ACHDA) is capable of computing three types of dynamics: inverse dynamics, forward dynamics, and hybrid dynamics. In inverse dynamics, the solver calculates joint torques from Cartesian acceleration constraints. In forward dynamics, the solver takes feed-forward joint torques as input and computes Cartesian accelerations. In hybrid dynamics, the solver combines both of the above methods. Additionally, as a byproduct, it can also take external forces as input and compute joint accelerations.\cite{featherstone2007book}.
+
     \section{Controller}
     \label{Controller}
     Controller guides systems toward desired setpoints or references value with feeback loop. The followings are some common controllers that are widely used in rocotics.
