@@ -77,6 +77,8 @@
 \definecolor{codepurple}{rgb}{0.58,0,0.82}
 \definecolor{backcolour}{rgb}{0.95,0.95,0.92}
 \usepackage{caption}
+\usepackage{float}
+
 \lstset { %
     language=C++,
     backgroundcolor=\color{black!5}, % set backgroundcolor
@@ -355,7 +357,7 @@ Supervised by\par
     {\bfseries\Large\thesection~}%before code
     % [\vspace{0.5cm}]
 
-\titlespacing{\section}{0pt}{0pt}{0pt}
+\titlespacing{\section}{0pt}{0pt}{5pt}
 
 \titleformat{\subsection}[display]
     {\flushleft}%format
@@ -364,7 +366,7 @@ Supervised by\par
     {\bfseries\Large\thesubsection~}%before code
     % [\vspace{0.1cm}]
 
-\titlespacing{\subsection}{0pt}{0pt}{0pt}
+\titlespacing{\subsection}{0pt}{0pt}{5pt}
 
 %\renewcommand{\cfttoctitlefont}{\color{hbrs}}
 %\renewcommand{\cftlottitlefont}{\flushright\color{hbrs}}

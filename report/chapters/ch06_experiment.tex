@@ -1,35 +1,118 @@
 %!TEX root = ../report.tex
 \documentclass[report.tex]{subfiles}
 \begin{document}
-\chapter{Experiment}
-In this research and development project, three experiements are being conducted with respected to three use cases: (1) Grasp object by sliding motion along surface and (2) Perform writing task and (3)Resting elbow manipulation . In this chapter, the experiements will be divided according to use cases.
+\chapter{Evaluation and results}
+In this research and development project, three experiements are being conducted with respected to three use cases: (1) Grasp object by sliding motion along surface and (2) Perform writing task and (3)Resting elbow manipulation. First, the set up of the experiements will be introduce. Second,the experiments/evaluation you are performing to analyse the use case will be described. At last, the results of the experiments will be delievered. In this chapter, the experiements and evaluation will be divided according to use cases.
     \section{Setup}
-    There are two experiement setups in this research and development project. Use case 1 and 2 share the same set up.
-    The common setup is listed below:
+    The three experiement setups in this research and development project are the same but with different intial position.
+    The tool and robot that is being use inthe experiements are listed below:
     \begin{itemize}
         \item Kinova® Gen3 Ultra lightweight robot maniputlator is attached to a table
         \item A Robotiq 2F-85 gripper is attached to the 7th joint of the Kinova arm
         \item The Kinova arm is connect to a laptop with LAN cable
         \item A Xbox controller
     \end{itemize}
-    \paragraph{\large{The setup of use case 1}\\}
-    Figure \ref{fig:us1_init} shows the initial pose of the robot arm for both use case 1. To ensure that the robot consistently begins each trial run from its precise starting position, it is necessary to press the B button on the Xbox controller. The motion will starts at a fixed starting pose $q = \{6.28318,0.261895,3.14159,4.01417,0,\\0.959856,0.57079\}$ in radian.
-    \begin{figure}[!h]
+    The direction that discuss in this chapter in according to the tool frame, which is equals to the task frame, robot base frame and the world frame.
+
+    \section{Use case 1 - Grasp object by sliding motion along surface}
+    \paragraph{\larger{Experiment design}\\}
+    The objective of this case study is to achieve a successful object grasp by sliding the robot manipulator along a contact surface, serving as a proof-of-concept task to set up the necessary infrastructure for task execution. It is assumed that the pose of the object is already known, and the only item present on the table is the object to be grasped, with no obstacles in the way. The contact surface is also well-defined.
+
+    The manipulation process begins with the manipulator approaching the contact surface, such as a table with the target object placed upon it. As the manipulator hovers above the contact surface, it proceeds to advance towards it until physical contact is established. By activly monitoring the velocity along linear Z axis $v_{lin_z}$in world frame. If the absolute value of $v_{lin_z}$ for 10 samples is less than a threshold value. The contact between a surface and the robot manipulator is being established.
+    After contact is established, the manipulator slides along the linear x direction for 10 cm $d_{x} = 0.1$ until it reaches a grasping region. Finally, the end-effector performs a grasping motion.
+    
+    In the evaluation, first, we will assess the power consumption of all the joints during motion in both contact and contactless scenarios. The goal is to determine whether performing the task on a contact surface leads to an increase in energy efficiency. Since the voltage and current of each joint are being logged during each trial,by using $P_i = V_i A_i$, where $P_i$ is the power consumption, $V_i$ is the voltage and $A_i$ is the current of a particular joint respectively, we can calculate the power consumption of each joint.
+
+    Second, we will analyze the joint torque $\tau_{Ji}$ for each joint to determine whether the joint torque decreases when contact is established. Where $\tau_J$ indicate joint torque and $i$ is the joint number.
+
+    \begin{figure}[H]
+        \captionsetup[subfigure]{justification=centering}
+        \begin{subfigure}{0.49\textwidth}
+                \centering
+                \includegraphics[width=\linewidth]{images/us1_contact2.jpg}
+                \caption{The moment when the contact established. The robot moves from the initial position until contact is established}
+                \label{fig:us1_con}
+            \end{subfigure}
+            \begin{subfigure}{0.49\textwidth}
+                \centering
+                \includegraphics[width=\linewidth]{images/us1_contactless.jpg}
+                \caption{The moment before the robot move along linear X direction. The robot arm moves along Z direction for 25 cm from the initial position}
+                \label{fig:us1_nocon}
+            \end{subfigure}
+            \caption{The robot pose before it move forward}
+        \end{figure}
+    \paragraph{\large{Setup}\\}
+    Figure \ref{fig:us1_init} shows the initial pose of the robot arm of use case 1. To ensure that the robot consistently begins each trial run from its precise starting position, it is necessary to press the B button on the Xbox controller. The motion will starts at a fixed starting pose $q = \{6.28318,0.261895,3.14159,4.01417,0,\\0.959856,0.57079\}$ in radian.
+    \begin{figure}[H]
         \centering
         \includegraphics[width=0.3\linewidth]{images/us1_initial.jpg}
-        \caption{The initial pose of the robot arm for both use case 1 and 2}
+        \caption{The initial pose of the robot arm of use case 1}
         \label{fig:us1_init}
     \end{figure}
-    \paragraph{\large{The setup of use case 2}\\}
-    Considering that the purpose of this use case is to perform a writing task, it's important to note that, similar to human writing, the writing motion does not commence from mid-air initially. Instead, the writing task initiates when the tip of the marker pen makes contact with a designated starting reference point on the paper as figure \ref{fig:us2_pen} demostrates. In this particular use case, we will conduct two experiments. In the first experiment, we will establish contact before proceeding with the writing task, whereas in the second experiment, no contact will be established beforehand. Figure \ref{fig:us2_init_con} and \ref{fig:us2_init_nocon} show the initial set up of both experiements. In \ref{fig:us2_init_nocon}, The ruler indicates that the distance from the center of the gripper to the table surface is 10 cm. This measurement serves as the initial height for the writing motion in situations where there is no physical contact with the table.
-    \begin{figure}[!h]
+    \paragraph{\large{Evaluation}\\}
+    Table \ref{tab:us1_table_power} presents the average voltage, current, and power consumption for each joint in both contact and contactless scenarios. Interestingly, the average voltage remains nearly unchanged across both scenarios. However, a notable observation arises when comparing the average current and power consumption among the joints.
+
+    Specifically, joints 1, 3, and 5 exhibit a substantial requirement for power and current. This phenomenon can be attributed to the robot's motion, which involves movement along the linear z-direction while maintaining a fixed z-position to prevent the collapse of the robot arm. When comparing the average current and power consumption between the two scenarios for individual joints, joint 1 and 5 experience significant increases of 68.2\% and 90.6\%, respectively. This increase is likely a result of the robot's need to maintain the end effector's position mid-air during movement along the linear x-direction towards the grasping position.
+    
+    Furthermore, joint 3 stands out as its power consumption in the contact case is 40.5\% higher than in the contactless case. This discrepancy may be attributed to the increased power required for this joint to move the end effector along the linear x-direction while overcoming friction with the contact surface.
+    
+    Examining the average joint torque individually, as shown in Table \ref{tab:us1_table_torque}, reveals that the torque on joints 1 and 5 increases by 41.2\% and 47.5\%, respectively, in the contactless case. In contrast, joint 3 experiences a 55.8\% decrease in torque under contactless conditions. However, when considering the average torque across all joints, the contact case exhibits an average torque of 1.9857 N, while the contactless case surprisingly records a lower average torque of 0.8256 N.
+    
+    From the analysis of this data, it becomes evident that performing the task on a contact surface can lead to increased energy efficiency in specific joints, such as the shoulder joint (joint 1) and wrist joint (joint 5). There is also the possibility that the energy efficiency of the elbow joint increases, given the increase in joint torque under contact conditions, likely due to the need to overcome friction with the contact surface. Further studies can explore this behavior with different contact surfaces featuring varying textures.
+
+\begin{table}[H]
+    \centering
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{c|ccc|ccc|}
+    \cline{2-7}
+    \multicolumn{1}{l|}{}       & \multicolumn{3}{c|}{Contact}                                                                                                                                                                                                                     & \multicolumn{3}{c|}{Contactless}                                                                                                                                                                                                                 \\ \hline
+    \multicolumn{1}{|c|}{Joint} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Average\\ voltage (V)\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Average\\ current (A)\end{tabular}} & \begin{tabular}[c]{@{}c@{}}Average\\ power consumption(W)\end{tabular} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Average\\ voltage (V)\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Average\\ current (A)\end{tabular}} & \begin{tabular}[c]{@{}c@{}}Average\\ power consumption(W)\end{tabular} \\ \hline
+    \multicolumn{1}{|c|}{0}     & \multicolumn{1}{c|}{23.4669}                                                       & \multicolumn{1}{c|}{0.1283}                                                        & 3.0093                                                                 & \multicolumn{1}{c|}{23.4727}                                                       & \multicolumn{1}{c|}{-0.0416}                                                       & -0.9776                                                                \\ \hline
+    \multicolumn{1}{|c|}{1}     & \multicolumn{1}{c|}{23.3939}                                                       & \multicolumn{1}{c|}{-0.7882}                                                       & -18.4433                                                               & \multicolumn{1}{c|}{23.3541}                                                       & \multicolumn{1}{c|}{-1.3291}                                                       & -31.0272                                                               \\ \hline
+    \multicolumn{1}{|c|}{2}     & \multicolumn{1}{c|}{3.1786}                                                        & \multicolumn{1}{c|}{0.0626}                                                        & 1.4536                                                                 & \multicolumn{1}{c|}{23.1764}                                                       & \multicolumn{1}{c|}{0.0104}                                                        & 0.2443                                                                 \\ \hline
+    \multicolumn{1}{|c|}{3}     & \multicolumn{1}{c|}{23.2972}                                                       & \multicolumn{1}{c|}{0.5766}                                                        & 13.4307                                                                & \multicolumn{1}{c|}{23.2945}                                                       & \multicolumn{1}{c|}{0.3427}                                                        & 7.9853                                                                 \\ \hline
+    \multicolumn{1}{|c|}{4}     & \multicolumn{1}{c|}{23.3074}                                                       & \multicolumn{1}{c|}{0.1844}                                                        & 4.2983                                                                 & \multicolumn{1}{c|}{23.2133}                                                       & \multicolumn{1}{c|}{0.0976}                                                        & 2.2659                                                                 \\ \hline
+    \multicolumn{1}{|c|}{5}     & \multicolumn{1}{c|}{23.2875}                                                       & \multicolumn{1}{c|}{0.2210}                                                        & 5.1487                                                                 & \multicolumn{1}{c|}{23.2839}                                                       & \multicolumn{1}{c|}{0.4215}                                                        & 9.8156                                                                 \\ \hline
+    \multicolumn{1}{|c|}{6}     & \multicolumn{1}{c|}{23.1337}                                                       & \multicolumn{1}{c|}{-0.0084}                                                       & -0.1950                                                                & \multicolumn{1}{c|}{23.1356}                                                       & \multicolumn{1}{c|}{-0.0129}                                                       & 0.2994                                                                 \\ \hline
+    \end{tabular}%
+    }
+    \caption{Table of the average voltage, current and power consumption of each joint in contact and contactless case}
+    \label{tab:us1_table_power}
+    \end{table}
+\begin{table}[H]
+    \centering
+    % \resizebox{0.5\textwidth}{!}{%
+    \begin{tabular}{c|c|c|}
+    \cline{2-3}
+    \multicolumn{1}{l|}{}       & Contact                                                      & Contactless                                                  \\ \hline
+    \multicolumn{1}{|c|}{Joint} & \begin{tabular}[c]{@{}c@{}}average\\ torque (N)\end{tabular} & \begin{tabular}[c]{@{}c@{}}average\\ torque (N)\end{tabular} \\ \hline
+    \multicolumn{1}{|c|}{0}     & 0.2164                                                       & -0.1564                                                      \\ \hline
+    \multicolumn{1}{|c|}{1}     & 9.8474                                                       & 16.7563                                                      \\ \hline
+    \multicolumn{1}{|c|}{2}     & 0.3025                                                       & 0.9884                                                       \\ \hline
+    \multicolumn{1}{|c|}{3}     & -3.1071                                                      & -1.3727                                                      \\ \hline
+    \multicolumn{1}{|c|}{4}     & 0.3014                                                       & 0.3063                                                       \\ \hline
+    \multicolumn{1}{|c|}{5}     & -1.7027                                                      & -2.5120                                                      \\ \hline
+    \multicolumn{1}{|c|}{6}     & -0.0787                                                      & -0.1095                                                      \\ \hline
+    \end{tabular}%
+    % }
+    \caption{Table of the average torque of each joint in contact and contactless case}
+    \label{tab:us1_table_torque}
+    \end{table}
+    \section{Use case 2 - Perform writing task}
+    \paragraph{\larger{Experiment design}\\}
+    The objective of use case 2 is to replicate the act of drawing a line on paper, emulating human writing. To commence the manipulation task, the gripper securely holds the pen or marker. Since this use case focus on the study of if the motion is precise and accurate when robot exploits the contact surface, the motion starts when the marker pen makes contact with the reference starting on as figure \ref{fig:us2_pen} shows.Upon achieving contact, the robot follows a predefined motion pattern to draw a line which the robot arm moves along linear x direction for 10 cm.
+    
+    The evaluation will involve comparing the trajectory with and without contact between the robot and the supporting surface. We define accuracy as the distance between a drawn trajectory and the pre-define straight line on the paper is less than 5cm and precision as the trajectory cluster within 1 standard divi
+    \paragraph{\large{Setup}\\}
+    Considering that the purpose of this use case is to perform a writing task, it's important to note that, similar to human writing, the writing motion does not commence from mid-air initially. Instead, the writing task initiates when the tip of the marker pen makes contact with a designated starting reference point on the paper as figure \ref{fig:us2_pen} demostrates. In this particular use case, we will conduct two experiments. In the first experiment, we will establish contact before proceeding with the writing task, whereas in the second experiment, no contact will be established beforehand. Figure \ref{fig:us2_init_con} and \ref{fig:us2_init_nocon} show the initial set up of both experiements at side view. In \ref{fig:us2_init_nocon}, The ruler indicates that the distance from the center of the gripper to the table surface is 10 cm. This measurement serves as the initial height for the writing motion in situations where there is no physical contact with the table.
+    \begin{figure}[H]
         \centering
         \captionsetup[figure]{justification=centering}
         \includegraphics[width=0.9\linewidth]{images/us2_starting_circle.jpg}
         \caption{The tip of the marker pen touches the starting reference point, indicates the robot arm is at the stating position}
         \label{fig:us2_pen}
     \end{figure}
-    \begin{figure}[h!]
+    \begin{figure}[H]
     \captionsetup[subfigure]{justification=centering}
     \begin{subfigure}{0.5\textwidth}
             \centering
@@ -43,41 +126,23 @@ In this research and development project, three experiements are being conducted
             \caption{The initial pose of the robot arm of use case 2 in contactless condition}
             \label{fig:us2_init_nocon}
         \end{subfigure}
-        \caption{initial position of use case 2}
-\end{figure}
+        \caption{Initial positions of use case 2}
+    \end{figure}
 
-    \section{Use case 1 - Grasp object by sliding motion along surface} 
-    The aim of this case study is to grasp the object successfully by sliding the robot
-    manipulator along a contact surface. Assume that the object pose is known, 
-    only the object to be grasped is on the table , no obstacle  and the contact surface is known.
-    The manipulator should first approach the contact surface, for example, a table
-    with the target object placed on it. When the manipulator is above the contact
-    surface, it moves toward the surface until establishing contact. By activly monitoring the velocity along linear Z axis $v_{lin_z}$in world frame.
-    If the absolute value of $v_{lin_z}$ for 10 samples is less than a threshold value. The contact between a surface and the robot manipulator is being established.
-    After contact is established, the manipulator slides along the linear x direction for 10 cm $d_{x} = 0.1$ until it reaches a grasping
-    region. Finally, the end-effector performs a grasping motion.
-
-
-    \section{Use case 2 - Perform writing task} 
-    The aim is to draw a line on the paper with a wrist joint contacting the writing
-    surface like human writing. Before starting the manipulation task, the gripper
-    firmly grasps the pen or marker. The manipulator should first approach the
-    contact surface, for example, a table with the target object placed on it. When
-    the manipulator is above the contact surface, it moves toward the surface until
-    establishing contact. Once contact is established, the manipulator draws a line
-    according to a predefined motion specification. The evaluation will be a trajectory
-    comparison in terms of position or velocity with and without contact between the
-    robot and the support surface
-        \subsection{Setup}
-        \subsection{Experimental Design}
-        \begin{itemize}
-            \item 
-        \end{itemize}
-    \section{Use case 3 - Resting elbow manipulation}
-        \subsection{Experimental Design}
-        \begin{itemize}
-            \item 
-        \end{itemize} 
+\section{Use case 3 - Resting elbow manipulation}
+    % \subsection{Experimental Design}
+    % \begin{itemize}
+    %     \item 
+    % \end{itemize} 
+    \paragraph{\large{Setup}\\}
+    In this use case, the robot's elbow joint is positioned atop a book, simulating the way humans rest their elbows on a surface when performing tasks such as picking up objects or writing. Figure \ref{fig:us3_init} demostrates the robot set up at a top view.
+    \begin{figure}[H]
+        \centering
+        \captionsetup[figure]{justification=centering}
+        \includegraphics[width=0.5\linewidth]{images/us3_initial.jpg}
+        \caption{The initial position of the robot arm in use case 3 where the elbow joint is resting on a book}
+        \label{fig:us3_init}
+    \end{figure}
 
 
 %%%%
