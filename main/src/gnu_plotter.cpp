@@ -322,3 +322,27 @@ void GNUPlotter::saveDataToCSV(const std::vector<KDL::JntArray>& q,
 
                 file.close();
                      }
+
+void GNUPlotter::saveDataToCSV(const std::vector<KDL::Vector>& current_pos, std::string logname){
+
+                // get the filefilename
+                std::string filename = getNewFileName(logname);
+
+                // create the file
+                std::ofstream file(filename);
+
+                std::string str = "current_pos_x,current_pos_y,current_pos_z\n";
+                // std::string str8 =
+                std::string result = str;
+                file << result;
+            
+                for (size_t i = 0; i < current_pos.size(); ++i) {
+                    file << current_pos[i].x() << ","
+                        << current_pos[i].y() << ","
+                        << current_pos[i].z() << ","
+
+                        <<"\n";
+                }
+
+                file.close();
+                     }

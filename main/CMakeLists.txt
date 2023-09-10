@@ -68,3 +68,6 @@ TARGET_LINK_LIBRARIES(us1 logger tf_utils gnu_plotter ${orocos_kdl_LIBRARIES} bo
 
 add_executable(mujoco_test mujoco_test.cpp)
 TARGET_LINK_LIBRARIES(mujoco_test mujoco)
+
+add_executable(sos sos.cpp ${all_SRCS} )
+TARGET_LINK_LIBRARIES(sos logger tf_utils gnu_plotter ${orocos_kdl_LIBRARIES} boost_filesystem boost_system boost_iostreams ${KDL_PARSER} robif2b::kinova_gen3) 

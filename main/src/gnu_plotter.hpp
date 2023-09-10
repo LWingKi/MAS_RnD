@@ -66,6 +66,10 @@ public:
                      const std::vector<std::array<double, 7>>& actuar_voltage,
                      std::string logname);
 
+
+  void saveDataToCSV(const std::vector<KDL::Vector>& current_pos, 
+                     std::string logname);
+
 private:
   // plot data
   bool plot_data_;
