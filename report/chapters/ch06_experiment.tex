@@ -25,6 +25,8 @@ In this research and development project, three experiements are being conducted
 
     Second, we will analyze the joint torque $\tau_{Ji}$ for each joint to determine whether the joint torque decreases when contact is established. Where $\tau_J$ indicate joint torque and $i$ is the joint number.
 
+    The hypothesis for use case 1 posits that in the contact scenario, energy efficiency will be elevated while joint torque will experience a reduction.
+
     \begin{figure}[H]
         \captionsetup[subfigure]{justification=centering}
         \begin{subfigure}{0.49\textwidth}
@@ -45,7 +47,7 @@ In this research and development project, three experiements are being conducted
     Figure \ref{fig:us1_init} shows the initial pose of the robot arm of use case 1. To ensure that the robot consistently begins each trial run from its precise starting position, it is necessary to press the B button on the Xbox controller. The motion will starts at a fixed starting pose $q = \{6.28318,0.261895,3.14159,4.01417,0,\\0.959856,0.57079\}$ in radian.
     \begin{figure}[H]
         \centering
-        \includegraphics[width=0.3\linewidth]{images/us1_initial.jpg}
+        \includegraphics[width=0.4\linewidth]{images/us1_initial.jpg}
         \caption{The initial pose of the robot arm of use case 1}
         \label{fig:us1_init}
     \end{figure}
@@ -98,17 +100,20 @@ In this research and development project, three experiements are being conducted
     \caption{Table of the average torque of each joint in contact and contactless case}
     \label{tab:us1_table_torque}
     \end{table}
+    \newpage
     \section{Use case 2 - Perform writing task}
     \paragraph{\larger{Experiment design}\\}
-    The objective of use case 2 is to replicate the act of drawing a line on paper, emulating human writing. To commence the manipulation task, the gripper securely holds the pen or marker. Since this use case focus on the study of if the motion is precise and accurate when robot exploits the contact surface, the motion starts when the marker pen makes contact with the reference starting on as figure \ref{fig:us2_pen} shows.Upon achieving contact, the robot follows a predefined motion pattern to draw a line which the robot arm moves along linear x direction for 10 cm.
+    The objective of use case 2 is to replicate the act of drawing a line on paper, emulating human writing. To commence the manipulation task, the gripper securely holds the pen or marker. Since this use case focus on the study of if the motion is accurate when robot exploits the contact surface, the motion starts when the marker pen makes contact with the reference starting on as figure \ref{fig:us2_pen} shows.Upon achieving contact, the robot follows a predefined motion pattern to draw a line which the robot arm moves along linear x direction for 10 cm.
+    The evaluation will involve comparing the trajectory with and without contact between the robot and the supporting surface. We define accuracy as the maxiumn displacement in linear y direction between a drawn trajectory and the pre-define straight line on the paper.
     
-    The evaluation will involve comparing the trajectory with and without contact between the robot and the supporting surface. We define accuracy as the distance between a drawn trajectory and the pre-define straight line on the paper is less than 5cm and precision as the trajectory cluster within 1 standard divi
+    The hypothesis for use case 2 suggests that in the contact scenario, accuracy will be enhanced, and the trajectory will exhibit greater stability.
+    \raggedbottom
     \paragraph{\large{Setup}\\}
     Considering that the purpose of this use case is to perform a writing task, it's important to note that, similar to human writing, the writing motion does not commence from mid-air initially. Instead, the writing task initiates when the tip of the marker pen makes contact with a designated starting reference point on the paper as figure \ref{fig:us2_pen} demostrates. In this particular use case, we will conduct two experiments. In the first experiment, we will establish contact before proceeding with the writing task, whereas in the second experiment, no contact will be established beforehand. Figure \ref{fig:us2_init_con} and \ref{fig:us2_init_nocon} show the initial set up of both experiements at side view. In \ref{fig:us2_init_nocon}, The ruler indicates that the distance from the center of the gripper to the table surface is 10 cm. This measurement serves as the initial height for the writing motion in situations where there is no physical contact with the table.
     \begin{figure}[H]
         \centering
         \captionsetup[figure]{justification=centering}
-        \includegraphics[width=0.9\linewidth]{images/us2_starting_circle.jpg}
+        \includegraphics[width=0.8\linewidth]{images/us2_starting_circle.jpg}
         \caption{The tip of the marker pen touches the starting reference point, indicates the robot arm is at the stating position}
         \label{fig:us2_pen}
     \end{figure}
@@ -128,36 +133,82 @@ In this research and development project, three experiements are being conducted
         \end{subfigure}
         \caption{Initial positions of use case 2}
     \end{figure}
+    \paragraph{\large{Evaluation}\\}
+    The plots below depict the robot's trajectory with and without contact with the table. In the contact case, as shown in Figure \ref{fig:us2_con_plot}, the trajectory exhibits misalignment with the reference line at the start of motion, and the displacement between the measured trajectory and the reference trajectory continues to increase.
+    In contrast, Figure \ref{fig:us2_nocon_plot} illustrates the situation in the contactless scenario, where the measured trajectory closely follows the reference trajectory until approximately 0.42 meters, after which it starts to deviate. When we compare both trajectories in Figure \ref{fig:us2_traj_com_plot}, we observe distinct motion behaviors between the two cases.
+    In the contact case, the motion appears less stable as indicated by the less smooth trajectory, possibly due to friction on the contact surface. Table \ref{tab:us2_displacement} further supports this observation, revealing that the maximum displacements in the contact case are significantly larger than those in the contactless situation, and the absolute average displacements 4 times in the contactless case.
+    This indicates that when the robot arm makes contact with a surface for support in the linear z-direction, considering accuracy based on the average displacement comparison, opting for contactless manipulation of the robot could be viewed as an optimal choice. This observation is unexpected and contradicts the hypothesis of use case 2. This could be attributed to the situation where the constraint on the linear z-direction is removed, leaving the motion subject to the influence of natural forces like gravity. However, the robot must still exert partial control over other directions to ensure that the end effector moves along the x-axis, albeit with greater friction compared to a contactless scenario. During this sliding motion, the end effector might inadvertently shift along the linear x and y axes or even undergo rotation as it attempts to overcome the friction between itself and the contact surface. Given that the surface is not entirely flat, these dynamics may introduce disturbances in various directions of motion.
+    \begin{figure}[H]
+        \captionsetup[figure]{justification=centering}
+                \centering
+                \includegraphics[width=0.8\linewidth]{images/us2_contact_traj.png}
+                \caption{The trajectory of pen writing in contact case}
+                \label{fig:us2_con_plot}
+            \end{figure}
 
+    \begin{figure}[H]
+        \captionsetup[figure]{justification=centering}
+                \centering
+                \includegraphics[width=0.8\linewidth]{images/us2_contactless_traj.png}
+                \caption{The trajectory of pen writing in contactless case}
+                \label{fig:us2_nocon_plot}
+    \end{figure}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=\linewidth]{images/us2_contactless_traj2.png}
+        \caption{Trajectory comparision of writing task between contact and contactless}
+        \label{fig:us2_traj_com_plot}
+\end{figure}
+\begin{figure}[H]
+    \captionsetup[figure]{justification=centering}
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/us2_real_compare.jpg}
+    \caption{The actual trajectory comparision of writing task between contact and contactless.\\Green line: contact case. Red line: contactless case}
+    \label{fig:us2_traj_com_real}
+\end{figure}
+\begin{table}[H]
+    \centering
+    % \resizebox{\textwidth}{!}{%
+    \begin{tabular}{c|c|c|}
+    \cline{2-3}
+                                      & maximum displacements(m) & average displacements(m) \\ \hline
+    \multicolumn{1}{|c|}{Contact}     &  0.00211145              & -0.00120878               \\ \hline
+    \multicolumn{1}{|c|}{Contactless} &  0.00089509              &  0.00034292              \\ \hline
+    \end{tabular}%
+    % }
+    \caption{Table of the average displacement, and maximum displacement in contact and contactless case}
+    \label{tab:us2_displacement}
+    \end{table}
+
+\newpage
 \section{Use case 3 - Resting elbow manipulation}
-    % \subsection{Experimental Design}
-    % \begin{itemize}
-    %     \item 
-    % \end{itemize} 
+    \paragraph{\larger{Experiment design}\\}
+    The objective of this use case is to assess the potential increase in energy efficiency by allowing certain joints of the manipulator to rest on a supporting surface. The manipulator will execute a standardized task, such as graspung object and writing tasks, under two different conditions: one with the joints resting on a surface (e.g., elbows) and another with the joints suspended in midair. The study will involve a comparison of energy consumption during the execution of the same task under these two conditions to determine if resting joints on a surface leads to improved energy efficiency. The hypothesis of use case is that the energy efficiency will be higher as use case 1 demostrates.
     \paragraph{\large{Setup}\\}
     In this use case, the robot's elbow joint is positioned atop a book, simulating the way humans rest their elbows on a surface when performing tasks such as picking up objects or writing. Figure \ref{fig:us3_init} demostrates the robot set up at a top view.
     \begin{figure}[H]
-        \centering
-        \captionsetup[figure]{justification=centering}
-        \includegraphics[width=0.5\linewidth]{images/us3_initial.jpg}
+        \captionsetup[subfigure]{justification=centering}
+        \begin{subfigure}{0.5\textwidth}
+        \includegraphics[width=\linewidth]{images/us3_initial.jpg}
         \caption{The initial position of the robot arm in use case 3 where the elbow joint is resting on a book}
         \label{fig:us3_init}
+    \end{subfigure}
+        \begin{subfigure}{0.5\textwidth}
+            \centering
+            \captionsetup[figure]{justification=centering}
+            \includegraphics[width=\linewidth]{images/us3_final.jpg}
+            \caption{The final position of the robot arm in use case 3 where the elbow joint is resting on a book}
+            \label{fig:us3_end}
+        \end{subfigure}
+        \caption{Robot arm behaviour in use case 2}
     \end{figure}
-
-
-%%%%
-    % \chapter{Evaluation and Results}
-
-    % \section{Experiment Description}
-
-    % Describe the experiments/evaluation you are performing to analyse your method.
-
-    % \section{Experimental Setup}  
-
-    % Describe your experimental setup in detail.
-
-    % \section{Results}
-
-    % Describe the results of your experiments in detail.
-
+    \paragraph{\large{Evaluation}\\}
+    A difficutie was encountered when conduct the experiement of this use case. As \ref{fig:us3_init} showed the initial position. The elbow joint of the robot manipulator is resting on a stack of book and the constriant on linear z direction is disabled but the constriant on the other direction in enabled such that the robot will not rotate and perform grasping task as use case 1. However, when the robot starts the motion, the 6th joint started to rotate in clockwise direction where in the program, the acceleration energy of angular z is being controlled by the cascaded controller where the set point is equals to zero. Means the controller is maintaining zero acceleration energy in angular z direction and joint 6 should not rotate as in figure \ref{fig:us3_end} shows. The hypothesis of such behaviour could be the P gains (linear and angular) is not high enough so the end effector cannot rotate back to the set point orientation on time. As the rotational motion led to the 6th joint reaching its limit and subsequently resulted in the termination of the program, the experiment was unable to proceed further. However, it is worth considering that in future attempts, fine-tuning the P gains settings might offer a potential solution for enhancing the motion.
+    % \begin{figure}[H]
+    %     \centering
+    %     \captionsetup[figure]{justification=centering}
+    %     \includegraphics[width=0.5\linewidth]{images/us3_}
+    %     \caption{The initial position of the robot arm in use case 3 where the elbow joint is resting on a book}
+    %     \label{fig:us3_init}
+    % \end{figure}
 \end{document}

@@ -1,0 +1,11 @@
+%!TEX root = ../report.tex
+\documentclass[report.tex]{subfiles}
+\begin{document}
+\chapter{Conclusion}
+In this research and development project, the possibility of exploiting contact constraint in robotic manipulation task has been presented under the experiements with three use cases: grasping object by sliding along a sufrace, performing writing task and resting robot manipulation.
+
+At the beginning of the report, the state of the art has been presented to introduce the basic concept related to this research and development project. By devlievering the concept of dynamics, the related solver: The Articulated Body Algorithm (ABA), Recursive Newton-Euler Algorithm (RNEA) and Articulated-Body Hybrid Dynamics Algorithm (ACHDA) ,we pinpoint out the deficit of the algorithm mentioned above. According to the algorithm delievered in \ref{alg:ABA} and \ref{alg:ALG1}, they all require a full task specification such as all 6 DoF of joint acceleration or joint torque to compute the forward or reverse dynamic which lacks flexiability in real life implementation. Also the concept of controller and some common examples are presented such as Proportional-integral-derivative (PID) controllers, Fuzzy logic algorithm and Impedance controllers. To keep the implementation simple, a cascaded controller with two P-controller is being used. After that the concept of Task based control is delievered to give a brief introdction on how to run a motion by specifying a task instead of directly control individual joints or degree of freedom.
+
+The deficit of state of the art leads to the solver and related library being used in this project, which is being introduce in chapter \ref{Background}.
+
+\end{document}
