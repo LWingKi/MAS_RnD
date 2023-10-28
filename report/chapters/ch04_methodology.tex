@@ -3,9 +3,9 @@
 \begin{document}
 
     \chapter{Background} \label{Background}
-    In section \ref{Limitations of previous work}, the limitations of the current research has been raised. In order to control the robot to move along a contact surface without sensory input, there were researchers, Vereshchagin and Popov, proposed a hybrid dynamic algorithms and tried to tackle the problem of exploting the defined contraints,robot model, joint angles, joint velocities, feed forward torque and external forces to compute the required joint torque and joint accelerations as command that being sent to the robots\cite{vereshchagin1989modeling},\cite{vereshchagin1974computer}. By taking the concept of power is produced by force act on a certain velocity, acceleration energy is produced by acting force on a certain acceleration.
+    In section \ref{Limitations of previous work}, the limitations of the current research has been raised. In order to control the robot to move along a contact surface without sensory input, there were researchers, Vereshchagin and Popov, proposed a hybrid dynamic algorithms and tried to tackle the problem of exploiting the defined constraints,robot model, joint angles, joint velocities, feed forward torque and external forces to compute the required joint torque and joint accelerations as command that being sent to the robots\cite{vereshchagin1989modeling},\cite{vereshchagin1974computer}. By taking the concept of power is produced by force act on a certain velocity, acceleration energy is produced by acting force on a certain acceleration.
     \section{Popov-Vereshchagin hybrid solver description}
-    The solver builds from \textit{Gauss principle of least constraints} , the basic principle of mechanics with a low linear time complexity of O(n). Gauss' principle asserts that the genuine motion (acceleration) of a system or body is determined by minimizing a quadratic function under the conditions of linear geometric motion constraints \cite{bruyninckx2000gauss},\cite{gauss1829neues}. The outcome of this Gauss function signifies the "acceleration energy" associated with a body. This energy is calculated as the product of the body's mass and the squared difference between its permissible (constrained) acceleration and its unrestricted (unconstrained) acceleration \cite{ramm2011principles}. The detailed description can be found in \cite{vereshchagin1989modeling},\cite{redon2002gauss} and \cite{popov1974control}. To describe Vereshchagin solver in a simpler manner, the solver takes the following parameters as input:
+    The solver builds from \textit{Gauss principle of least constraints} , the basic principle of mechanics with a low linear time complexity of O(n). Gauss' principle asserts that the genuine motion (acceleration) of a system or body is determined by minimising a quadratic function under the conditions of linear geometric motion constraints \cite{bruyninckx2000gauss},\cite{gauss1829neues}. The outcome of this Gauss function signifies the "acceleration energy" associated with a body. This energy is calculated as the product of the body's mass and the squared difference between its permissible (constrained) acceleration and its unrestricted (unconstrained) acceleration \cite{ramm2011principles}. The detailed description can be found in \cite{vereshchagin1989modeling},\cite{redon2002gauss} and \cite{popov1974control}. To describe Vereshchagin solver in a simpler manner, the solver takes the following parameters as input:
     \begin{itemize}
         \item Robot's model, which defined by: kinematic parameters of the chain, segments' mass and rigid-body inertia, and effective inertia of each joint rotor
         \item Root acceleration of the robot's base segment
@@ -14,20 +14,20 @@
         \item Feedfoward joint torques
         \item External force applies on the robot
         \item Cartesian Acceleration Constraints
-        \item Setpoints which measured in unit of acceleration energy
+        \item Set-points which measured in unit of acceleration energy
     \end{itemize}
     With the two parameters as output:
     \begin{itemize}
         \item The resulting joint accelerations defined at end-effector frame
         \item The resulting joint constraint torques defined at end-effector frame
     \end{itemize}
-    The algorithm computes the required robot motion at the instantaneous time step based on the aformentioned input parameters with three computation sweeps. The detail explaination can refer to \cite{vereshchagin1989modeling} ,\cite{schneider2019exploiting} and \cite{kulkarni2019applying}.
+    The algorithm computes the required robot motion at the instantaneous time step based on the aforementioned input parameters with three computation sweeps. The detail explanation can refer to \cite{vereshchagin1989modeling} ,\cite{schneider2019exploiting} and \cite{kulkarni2019applying}.
     \section{Task interfaces} \label{Task interfaces}
     % Active contraint matrix and acceleration energy setpoints
     One crucial feature or Popov-Vereshchagin hybrid solver is it can directly use task definitions as input so calculate the desire robot motions. There are three task interfaces can be specified in the input:
     \begin{enumerate}
         \item The virtual and physical external force acting on each segments of the robot $F_{ext}$
-        \item The feedforward force $\tau$ acts on each joint 
+        \item The feed-forward force $\tau$ acts on each joint 
         \item The Cartesian Acceleration Constraints that impose on the end-effector segment according the equation $\alpha_N^T \ddot{X_N} = \beta_N$
     \end{enumerate}
     \paragraph*{\large{Task interfaces: $F_{ext}$ }\\} The initial type of task definition is suitable for describing physical forces and torques applied to each of the robot's segments in Cartesian coordinates, as opposed to artificial ones. For example, human acts force on robot segments or the extra weight from gripper.
@@ -47,8 +47,8 @@
             0\\ 
         \end{bmatrix}
     \end{align}
-    In $\alpha_N$ matrix, the first three rows represent the linear elements and the last three rows represent angular elements respectively. By giving zero value to acceleration to energy setpoint,the user is defining that the end-effector is not allowed to have linear acceleration in x direction. To put this in other words, the user give a constraint of the motion on end effector of the robot along linear x direction.
-    The other exmaple is to given constraints specification in 5 DOFs. User can contraint the end effecot to move freely only along z direction without any rotation motion:   
+    In $\alpha_N$ matrix, the first three rows represent the linear elements and the last three rows represent angular elements respectively. By giving zero value to acceleration to energy set-point,the user is defining that the end-effector is not allowed to have linear acceleration in x direction. To put this in other words, the user give a constraint of the motion on end effector of the robot along linear x direction.
+    The other example is to given constraints specification in 5 DOFs. User can constraint the end effector to move freely only along z direction without any rotation motion:   
     \begin{align}
         \alpha_N = \begin{bmatrix}
             1&0&0&0&0&\\
@@ -66,9 +66,9 @@
             0\\ 
         \end{bmatrix}
     \end{align}
-    In the 5 DOFs example, the constrainted joint torques will be computued by the Acceleration Constrained Hybrid Dynamics (ACHD) solver even the linear z direction motion is not being specified. Underconstrained motion specifications are naturally resolved using Gauss' principle of least constraint. This means that directions in which the robot is not constrained by the task definition, its motions will be controlled by the nature. In this example, the end effector will fall along linear z direction due to the weight of the link and gravity.
+    In the 5 DOFs example, the constrained joint torques will be computed by the Acceleration Constrained Hybrid Dynamics (ACHD) solver even the linear z direction motion is not being specified. Unconstrained motion specifications are naturally resolved using Gauss' principle of least constraint. This means that directions in which the robot is not constrained by the task definition, its motions will be controlled by the nature. In this example, the end effector will fall along linear z direction due to the weight of the link and gravity.
 
-    The last example demostrate a full task specification of the desired end-effector motion in all 6 DOFs, means there are total 6 constraints and $m = 6$ such that:
+    The last example demonstrate a full task specification of the desired end-effector motion in all 6 DOFs, means there are total 6 constraints and $m = 6$ such that:
     \begin{align}
         \alpha_N = \begin{bmatrix}
             1&0&0&0&0&0&\\
@@ -80,10 +80,10 @@
         \end{bmatrix} ,\qquad
         \beta_N = \alpha_N^T \ddot{X_N}
     \end{align}
-    where N is the index of robot's end effector. We can directly assign  the magnitudes of the desired/task-defined spatial acceleration $\ddot{X_N}$ to the 6 x 1 vector of acceleration energy $\beta_N$ such that $\beta_N =  \ddot{X_N}$. While the physical dimensions (units) of these two vectors are dissimilar, the presence of unit vectors in the $\alpha_N$ property enables us to allocate desired acceleration values to energy setpoints for acceleration in their respective directions.Specifically, every column within the $\alpha_N$ holds a value of 1 in the corresponding direction where constraint force is applied. As a result, the acceleration energy setpoint value aligns with the Cartesian acceleration value in the corresponding direction.
+    where N is the index of robot's end effector. We can directly assign  the magnitudes of the desired/task-defined spatial acceleration $\ddot{X_N}$ to the 6 x 1 vector of acceleration energy $\beta_N$ such that $\beta_N =  \ddot{X_N}$. While the physical dimensions (units) of these two vectors are dissimilar, the presence of unit vectors in the $\alpha_N$ property enables us to allocate desired acceleration values to energy set-points for acceleration in their respective directions.Specifically, every column within the $\alpha_N$ holds a value of 1 in the corresponding direction where constraint force is applied. As a result, the acceleration energy set-point value aligns with the Cartesian acceleration value in the corresponding direction.
     The original Popov-Vereshchagin solver only account for the end effector of the robot and recently,\cite{shakhimardanov2015composable} extended the algorithm to impose constraints to all robot segments.
     \section{Calculate differences with KDL library}
-    We need a controller to assign $\beta_N$ according to a setpoint. In order to compute the control signal, we need to calculate the difference between measured value and setpoint value. The direct way to calculate position difference is to calculate the difference between current frame and target frame. First, divide a frame into linear part and rotation part. We compute the position linear difference with:
+    We need a controller to assign $\beta_N$ according to a set-point. In order to compute the control signal, we need to calculate the difference between measured value and set-point value. The direct way to calculate position difference is to calculate the difference between current frame and target frame. First, divide a frame into linear part and rotation part. We compute the position linear difference with:
     \begin{align}
         p_{err} = p_{measure}-p_{setpoint}
     \end{align}
@@ -106,7 +106,7 @@
         \label{eq2}
     \end{align}
     where V is a 6 x 1 vector which composes both linear and angular velocities.\\
-    There is a difficulties to present the physical meaning since the rotation error and control signal are in matrix form . When we use a cascaded controller, the position control signal will be feed into the velocities controller as a setpoint. However, according to \ref{eq1} and \ref{eq2} , mapping a rotation matrix to a velocity vector poses a challenge. To address these issues, the KDL library offers various methods for calculating frame differences. The \textit{diff()} function is overloaded for all classes in \textit{frames.hpp} and \textit{framesvel.hpp} according to difference data structure of parameters as input:
+    There is a difficulties to present the physical meaning since the rotation error and control signal are in matrix form . When we use a cascaded controller, the position control signal will be feed into the velocities controller as a set-point. However, according to \ref{eq1} and \ref{eq2} , mapping a rotation matrix to a velocity vector poses a challenge. To address these issues, the KDL library offers various methods for calculating frame differences. The \textit{diff()} function is overloaded for all classes in \textit{frames.hpp} and \textit{framesvel.hpp} according to difference data structure of parameters as input:
     \begin{itemize}
         \item Frame 
         \item Rotation 
@@ -117,7 +117,7 @@
     A Frame class in KDL library represents a frame transformation (rotation and translation) in 3D space. It composes with a 3 x 1 Vector (translation) data structure $p$ and a 3 x 3 matrix $M$ with the Rotation data structure:
     \begin{align}
         p = \begin{bmatrix}
-            x\\y\\z
+            x\\y\\zz
         \end{bmatrix} \qquad
         M = \begin{bmatrix}
             X_x,Y_x,Z_x\\
@@ -129,6 +129,6 @@
     The first function overload allows \textit{diff()} determines the rotation axis necessary to rotate the frame b1 to the same orientation as frame b2 and the vector necessary to translate the origin of b1 to the origin of b2, and stores the result in a Twist data structure. However, it's important to note that this \textit{Twist} type value does not possess the characteristic properties of a typical twist.The output \textit{Twist} data structure is a mixture of axis-angle Representation and translation Vector. In this report, this \textit{Twist} data structure will be called \textit{Pose Vector} \\
     In general, the rotation vector representation is a compact way to describe a three-dimensional rotation or orientation in space and present how an frame is rotated from its original orientation to a new orientation without the complexities of matrices or quaternions. 
     \paragraph{\large{diff(Twist a,Twist b)}\\}
-    The second function overload determines the difference between the velocity vectors and rotational velocity vectors. In this context since the Twist input consist the current linear and angular velocity of the end effector and setpoint in world frame. The output of \textit{diff(Twist\_a,Twist\_b)} in this context will be the velocity error between setpoint and measured value from the robot end effector w.r.t to world frame.
+    The second function overload determines the difference between the velocity vectors and rotational velocity vectors. In this context since the Twist input consist the current linear and angular velocity of the end effector and set-point in world frame. The output of \textit{diff(Twist\_a,Twist\_b)} in this context will be the velocity error between set-point and measured value from the robot end effector w.r.t to world frame.
 
 \end{document}
